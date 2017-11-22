@@ -19,3 +19,8 @@ I use the [Haskell Servant](http://haskell-servant.readthedocs.io/en/stable/inde
 I use the [Argon](https://github.com/rubik/argon) library to compute the cyclomatic complexity of Haskell source files.
 
 I use the [Haskell Cloud Platform](http://haskell-distributed.github.io/) to distribute the workload accross nodes in the distributed system.
+
+
+Notes to self:
+
+use: stack build --flag cryptonite:-support_rdrand
