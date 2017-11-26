@@ -6,9 +6,9 @@ A RESTful service to compute the cyclomatic complexity of a code repository usin
 
 My implementation provides a RESTful API which exposes a simple endpoint to call with a code repository's url.
 
-I follow the **master-slave work stealing pattern** to distribute the work across the nodes in the distributed system.
+To distribute the work across the nodes in the distributed system I implement and compare the **master-slave work stealing pattern**, **master-slave work pushing pattern**.
 
-The Message Passing Interface is used to enable nodes to enable point-to-point communication.
+The Message Passing Interface is used to enable nodes to enable point-to-point communication within the cluster.
 
 The problem is **massively parallel** with simple parallelisation across commits and files within a single commit.
 
@@ -20,7 +20,5 @@ I use the [Argon](https://github.com/rubik/argon) library to compute the cycloma
 
 I use the [MPI for Python library](https://mpi4py.readthedocs.io) to distribute the workload accross nodes in the distributed system using the Message Passing Interface specification.
 
+## Results
 
-Notes to self:
-
-use: stack build --flag cryptonite:-support_rdrand

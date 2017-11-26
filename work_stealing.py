@@ -1,20 +1,21 @@
 import argparse
 from mpi4py import MPI
+import utils
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--git_url', type=str)
+parser.add_argument('--repo_dir', type=str)
 args = parser.parse_args()
+repo_dir = args.repo_dir
 
 comm = MPI.COMM_WORLD
 num_proc = comm.Get_size()
 rank = comm.Get_rank()
 
-def compute_complexity(commit, file_name):
-    return 1
-
 if rank == 0: # manager
     res = {}
-    commits = [('a.hs', 'b.hs'), ('a.hs', 'b.hs', 'c.hs'), ('b.hs', 'c.hs', 'd.hs', 'e.hs')]
+    files = utils.get_files_with_ext(repo_dir, '.hs')
+    commits = [files]
+    # commits = [('a.hs', 'b.hs'), ('a.hs', 'b.hs', 'c.hs'), ('b.hs', 'c.hs', 'd.hs', 'e.hs')]
     num_files = sum(map(len, commits))
     work_packets = [(i, f) for i, commit in enumerate(commits) for f in commit]
     work_counter = 0
@@ -39,7 +40,7 @@ if rank == 0: # manager
                 work = work_packets[work_counter]
             comm.send(work, dest=rank, tag=2)
             work_counter += 1
-    print res
+    print sum(res.values())
 
 else: # worker
     comm.send((rank, {}), dest=0, tag=1) # ready for work
@@ -49,7 +50,7 @@ else: # worker
             break
         else:
             res = {}
-            complexity = compute_complexity(commit_id, file_name)
+            complexity = utils.compute_complexity(commit_id, file_name)
             res[(commit_id, file_name)] = complexity
             comm.send((rank, res), dest=0, tag=1)
 
