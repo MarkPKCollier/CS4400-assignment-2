@@ -6,10 +6,10 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--git_url', type=str)
-parser.add_argument('--work_distribution_strategy', type=str)
+parser.add_argument('--data_parallelisation_strategy', type=str)
 args = parser.parse_args()
 git_url = args.git_url
-work_distribution_strategy = args.work_distribution_strategy
+data_parallelisation_strategy = args.data_parallelisation_strategy
 
 comm = MPI.COMM_WORLD
 num_proc = comm.Get_size()
@@ -21,7 +21,7 @@ check_output('git clone {0} {1}'.format(git_url, repo_dest), shell=True)
 if rank == 0: # manager
     res = {}
     commits = utils.get_all_files_in_repo(repo_dest, '.hs')
-    if work_distribution_strategy == 'files':
+    if data_parallelisation_strategy == 'files':
         work_packets = [(commit_id, [f]) for commit_id, files in commits.iteritems() for f in files]
         num_files = num_work_packets = len(work_packets)
     else:
