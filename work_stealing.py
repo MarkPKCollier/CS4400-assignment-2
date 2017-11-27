@@ -1,23 +1,26 @@
 import argparse
 from mpi4py import MPI
+from subprocess import call
 import utils
+import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--repo_dir', type=str)
+parser.add_argument('--git_url', type=str)
 args = parser.parse_args()
-repo_dir = args.repo_dir
+git_url = args.git_url
 
 comm = MPI.COMM_WORLD
 num_proc = comm.Get_size()
 rank = comm.Get_rank()
 
+repo_dest = os.path.abspath('./repos/' + git_url.split('/')[-1].replace('.git', '') + str(rank))
+call(['git clone {0} {1}'.format(git_url, repo_dest)], shell=True)
+
 if rank == 0: # manager
     res = {}
-    files = utils.get_files_with_ext(repo_dir, '.hs')
-    commits = [files]
-    # commits = [('a.hs', 'b.hs'), ('a.hs', 'b.hs', 'c.hs'), ('b.hs', 'c.hs', 'd.hs', 'e.hs')]
-    num_files = sum(map(len, commits))
-    work_packets = [(i, f) for i, commit in enumerate(commits) for f in commit]
+    commits = utils.get_all_files_in_repo(repo_dest, '.hs')
+    work_packets = [(commit_id, f) for commit_id, files in commits.iteritems() for f in files]
+    num_files = len(work_packets)
     work_counter = 0
     while True:
         rank, work_res = comm.recv(tag=1)
@@ -50,7 +53,9 @@ else: # worker
             break
         else:
             res = {}
-            complexity = utils.compute_complexity(commit_id, file_name)
+            complexity = utils.compute_complexity(repo_dest, commit_id, file_name)
             res[(commit_id, file_name)] = complexity
             comm.send((rank, res), dest=0, tag=1)
+
+call(['rm -rf {0}'.format(repo_dest)], shell=True)
 
