@@ -1,17 +1,25 @@
 import os
-from subprocess import check_output, call
+from subprocess import check_output, check_call
 import json
 
-def compute_complexity(repo_dir, commit_id, file_name):
-    if not file_name.endswith('.hs'):
-        return 0
-    output = check_output(['cd {0} && git checkout {1} && argon --json {2}'.format(repo_dir, commit_id, file_name)], shell=True)
-    output = json.loads(output.strip())
-    results = filter(lambda res: res.get('type') == 'result', output)
-    all_blocks = []
-    for result in results:
-        all_blocks += result.get('blocks', [])
-    return sum(map(lambda block: block['complexity'], all_blocks))
+def compute_complexity(repo_dir, commit_id, file_names):
+    def helper(file_name):
+        if not file_name.endswith('.hs'):
+            return 0
+        output = check_output(['argon --json {0}'.format(os.path.join(repo_dir, file_name))], shell=True)
+        output = json.loads(output.strip())
+        results = filter(lambda res: res.get('type') == 'result', output)
+        all_blocks = []
+        for result in results:
+            all_blocks += result.get('blocks', [])
+        return sum(map(lambda block: block['complexity'], all_blocks))
+    
+    check_call('cd {0} && git checkout {1}'.format(repo_dir, commit_id), shell=True)
+    res = {}
+    for file_name in file_names:
+        complexity = helper(file_name)
+        res[(commit_id, file_name)] = complexity
+    return res
 
 def get_dir_files_with_ext(root_dir, ext):
     res = []
@@ -28,7 +36,7 @@ def get_commit_ids(repo_dir):
     return output.split('\n')
 
 def set_repo_to_commit_id(repo_dir, commit_id):
-    call(["cd {0} && git checkout {1}".format(repo_dir, commit_id)], shell=True)
+    check_call("cd {0} && git checkout {1}".format(repo_dir, commit_id), shell=True)
 
 def get_all_files_in_repo(repo_dir, ext):
     res = {}
