@@ -6,6 +6,7 @@ import requests
 
 SERVER_ADDR = 'http://127.0.0.1:5000'
 REPO = 'https://github.com/rubik/argon.git'
+# REPO = 'https://github.com/MarkPKCollier/CS4400-assignment-2.git'
 MAX_WORKERS = 8
 workers = [2 ** i for i in range(int(np.log2(MAX_WORKERS) + 1))]
 
@@ -27,8 +28,10 @@ plt.plot(workers, times[('files', 'work_stealing')], 'r-', label='files | work s
 plt.plot(workers, times[('files', 'work_pushing')], 'g-', label='files | work pushing')
 plt.plot(workers, times[('commits', 'work_stealing')], 'b-', label='commits | work stealing')
 plt.plot(workers, times[('commits', 'work_pushing')], 'm-', label='commits | work pushing')
-plt.axis([0, MAX_WORKERS + 1, min_time - 1, max_time + 2])
+plt.axis([0, MAX_WORKERS + 1, 0, 1.1 * max_time])
 plt.xlabel('Num workers')
 plt.ylabel('Time (seconds)')
-plt.legend(loc=1, title='Data parallelisation strategy | Work distribution strategy')
-plt.show()
+plt.legend(loc=1, title='Data parallelisation | Work distribution')
+plt.title('Argon repo execution times - Macneill - Num cores = 8')
+# plt.show()
+plt.savefig('images/argon_macneill.png')
