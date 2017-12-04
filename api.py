@@ -3,7 +3,6 @@ from flask import request
 from flask import jsonify
 from subprocess import check_output
 import time
-from git import Repo
 
 app = Flask(__name__)
 
