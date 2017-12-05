@@ -2,6 +2,34 @@
 
 A RESTful service to compute the cyclomatic complexity of a code repository using a distributed system.
 
+## Usage
+
+The application can be run by cloning the repo and installing the requirements or in a dockerised container.
+
+### Docker setup instructions
+
+Make sure you have docker and git installed.
+
+```
+git clone https://github.com/MarkPKCollier/CS4400-assignment-2.git
+docker pull nlknguyen/alpine-mpich
+docker build -t api-image .
+docker run -d \
+     -e APP_CONFIG=application.config.example \
+     -p 8080:5000 \
+     api-image
+```
+
+### Non-docker setup instuctions
+
+Make sure you have python, git and pip installed.
+
+```
+git clone https://github.com/MarkPKCollier/CS4400-assignment-2.git
+pip install -r requirements.txt
+python api.py --port_num=8080
+```
+
 ## Implementation details
 
 My implementation provides a RESTful API which exposes a simple endpoint to call with a code repository's url.
