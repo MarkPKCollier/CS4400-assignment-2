@@ -13,7 +13,7 @@ port_num = args.port_num
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def api():
     git_url = request.args.get('git_url')
     max_workers = request.args.get('max_workers')
