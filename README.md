@@ -17,13 +17,13 @@ python api.py --port_num=8080
 If you wish to run a batch of experiments you can run:
 
 ```
-python run_experiments.py
+python run_experiments.py --max_workers=8 --repo=https://github.com/tensorflow/haskell.git --server_addr=http://127.0.0.1:8080
 ```
 
-you can also just make a GET request like so:
+the above command will take a while to run as it will run a set of experiments, if you just want to run a single experiment you can also just make a GET request like so:
 
 ```
-http://127.0.0.1:5000/?git_url=https://github.com/tensorflow/haskell.git&max_workers=4&data_parallelisation_strategy=commits&work_distribution_strategy=work_stealing
+http://127.0.0.1:8080/?git_url=https://github.com/tensorflow/haskell.git&max_workers=4&data_parallelisation_strategy=commits&work_distribution_strategy=work_stealing
 ```
 
 ## Implementation details

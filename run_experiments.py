@@ -4,12 +4,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 
-SERVER_ADDR = 'http://127.0.0.1:8080'
-# SERVER_ADDR = 'http://localhost:3000'
-REPO = 'https://github.com/rubik/argon.git'
-# REPO = 'https://github.com/tensorflow/haskell.git'
-# REPO = 'https://github.com/MarkPKCollier/CS4400-assignment-2.git'
-MAX_WORKERS = 8
+parser = argparse.ArgumentParser()
+parser.add_argument('--max_workers', type=int, required=True)
+parser.add_argument('--server_addr', type=str, required=True)
+parser.add_argument('--repo', type=str, required=True)
+args = parser.parse_args()
+
+SERVER_ADDR = args.server_addr
+REPO = args.repo
+MAX_WORKERS = args.max_workers
 workers = [2 ** i for i in range(int(np.log2(MAX_WORKERS) + 1))]
 
 times = {}
