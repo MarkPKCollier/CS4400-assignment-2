@@ -4,7 +4,7 @@ A RESTful service to compute the cyclomatic complexity of a code repository usin
 
 ## Usage
 
-The application can be run by cloning the repo and installing the requirements.txt file, please note that you must have MPI installed.
+The application can be run by cloning the repo and installing the requirements.txt file, please note that you must have [MPI](https://www.open-mpi.org/) installed.
 
 Make sure you have python, git and pip installed.
 
@@ -64,7 +64,7 @@ Below is the API specification for the RESTful cyclomatic complexity server.
 
 ## Implementation details
 
-My implementation provides a RESTful API which exposes a simple endpoint to call with a code repository's url. You may also specify a data parallelisation strategy from ['files', 'commits'], a work distribution strategy [work_stealing', 'work_pushing'] and the maximum number of workers you wish to spin up.
+My implementation provides a RESTful API which exposes a simple endpoint to call with a code repository's url. You may also specify a data parallelisation strategy from ['files', 'commits'], a work distribution strategy ['work_stealing', 'work_pushing'] and the maximum number of workers you wish to spin up.
 
 I computed the cyclomatic complexity of the user provided repo using [Argon](https://github.com/rubik/argon). Thus the computed cyclomatic complexity is of Haskell (.hs) files only.
 
@@ -74,19 +74,21 @@ I know you said in class that undergraduates were only required to implement one
 
 To distribute the work across the nodes in the distributed system I implement and compare the **master-slave work stealing pattern** and the **master-slave work pushing pattern**.
 
+In work stealing each worker sends a message to the master node when it is ready for another work packet. In work pushing the master node divides the work up in advance and gives a piece of the divided work to each worker.
+
 The problem is **massively parallel** with simple parallelisation across commits and files within a single commit. I experiment with two data parallelisation strategies. The data is can be parallelised along the files in a commit or along the commits in a repo. I compare these two means to parallise the data by directing the master to give out chunks of work in the form of **single files from a commit** or **single commits in a repo**.
 
 In particular each worker maintains a local copy of the repository which it attains by cloning the repo at initialization. The time to clone the repo i.e. the data distribution time **is** included in the measured execution time in the experiments below.
 
-The master nodes distributes the work by sending (commit id, file id) pairs to the workers in the case of the file data parallelisation strategy and just commit ids in the case of the commit data parallelisation strategy. Thus files are not sent accross the network in point-to-point communication, only ids which are relatively small in size are sent, this reduces network traffic.
+The master node distributes the work by sending (commit id, file id) pairs to the workers in the case of the file data parallelisation strategy and just commit ids in the case of the commit data parallelisation strategy. Thus files are not sent accross the network in point-to-point communication, only ids which are relatively small in size are sent, this reduces network traffic.
 
 ### Work pushing 
 
-For work pushing, the master node must divide up the work in advance. The key to ensuring work pushing performs well is the ability to evenly divide up the work.
+For work pushing, the master node must divide up the work in advance. The key to ensuring work pushing performs well is the ability to divide up the work evenly.
 
 If there are N nodes and W work packets, a naive approach is to give the first worker the first W/N packets. But the distribution pattern I implement is to give the first worker all packets with id mod N = 1 and so on.
 
-This ensures that if the amount of work per packet is related to the packet id, which is very likely given that commits with increasing ids likely have more files, then the work is still evenly distributed using the mod arithmetic approach.
+If the amount of work per packet is related to the packet id, which is very likely given that commits with increasing ids likely have more files, then the work is still evenly distributed using the mod arithmetic approach.
 
 ## Point-to-point communication
 
@@ -116,13 +118,13 @@ I have measured the execution time of these experiments and computed the paralle
 
 Interestingly we see little difference in the execution times between the 4 work distribution, data distribution pairs.
 
-Intuitively I expected that work pushing with commit based data distribution to be the most efficient means to parallelize the task. Dividing the work evenly seemed relatively easy (as I describe above) so the advantage that work stealing gives in terms of evenly distributing the work should be minimized and the communication overhead of work stealing is reduced.
+Intuitively I expected that work pushing with commit based data distribution to be the most efficient means to parallelize the task. Dividing the work evenly seemed relatively easy (as I describe above with the modular arithmetic approach) so the advantage that work stealing gives in terms of evenly distributing the work should be minimized and the communication overhead of work stealing is reduced.
 
 The disparity between the communication overhead of the work stealing and work pushing approach may be hightened if the distributed system was run on an underlying architecture where communication was across a network rather than local. I would expect the work pushing approach to have more of an advantage over work stealing in this setting as the communication overhead of work stealing would be increased.
 
 The work pushing approach does show a sustained but small advantage over the work stealing approach in my experiments. I see little difference between parallelizing the data/distributing the work by commits or by file.
 
-As anticipated we see linear speedup up to 4 workers, when the underlying architecture has 4 cores. Beyond that additional workers add no parallelization as that are just being swapped in and out by OS and are not in fact running in parallel.
+As anticipated we see linear speedup up to 4 workers, when the underlying architecture has 4 cores. Beyond that additional workers do not reduce execution time as they add no parallelization because they are just being swapped in and out by OS and are not in fact running in parallel.
 
 Of course the problem isn't perfectly parallel and parallelizing the computation leads to some overhead relative to serial execution (mostly due to communication). This is why we see a parallel speedup less than 4 for 4 workers.
 
