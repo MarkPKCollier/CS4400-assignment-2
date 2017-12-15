@@ -40,8 +40,6 @@ Below is the API specification for the RESTful cyclomatic complexity server.
   
 *  **URL Params**
 
-   <_If URL params exist, specify them in accordance with name mentioned in URL section. Separate into optional and required. Document data constraints._> 
-
    **Required:**
  
    `git_url=[string]`
