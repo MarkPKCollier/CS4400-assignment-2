@@ -38,6 +38,22 @@ The Message Passing Interface is used to enable point-to-point communication bet
 
 ## Results
 
+I ran experiments with [1,2,4,8] workers and all 4 pairs of work distribution, data distribution strategies.
+
+I measured the cyclomatic complexity of the [Tensorflow Haskell repo](https://github.com/tensorflow/haskell) and the [Argon repo](https://github.com/rubik/argon) itself. These repos have 165 commits and 119 commits respectively and single threaded execution times are approximately 430 seconds and 235 seconds respectively. So there is plenty of opportunity for parallel speedup and substantial benefit from it.
+
+I run these experiments on my available computational resources, a Macbook Air with 4 cores.
+
+I have measured the execution time of these experiments and computed the parallel speedup as the serial execution time/parallel execution time. Below are the results:
+
+![Argon Repo Execution Times on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac.png]
+
+![Argon Repo Parallel Speedup on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac_speedup.png]
+
+![Tensorflow Haskell Repo Execution Times on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac.png]
+
+![Tensorflow Haskell Repo Parallel Speedup on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac_speedup.png]
+
 ## Libraries
 
 I use the [Python Flask library](http://flask.pocoo.org/) to implement a lightweight RESTful service.

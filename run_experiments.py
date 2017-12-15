@@ -3,6 +3,7 @@ matplotlib.use('macosx')
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--max_workers', type=int, required=True)
