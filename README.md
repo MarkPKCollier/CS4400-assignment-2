@@ -46,13 +46,13 @@ I run these experiments on my available computational resources, a Macbook Air w
 
 I have measured the execution time of these experiments and computed the parallel speedup as the serial execution time/parallel execution time. Below are the results:
 
-![Argon Repo Execution Times on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac.png]
+![Argon Repo Execution Times on Macbook Air](https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac.png)
 
-![Argon Repo Parallel Speedup on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac_speedup.png]
+![Argon Repo Parallel Speedup on Macbook Air](https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/argon_mac_speedup.png)
 
-![Tensorflow Haskell Repo Execution Times on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac.png]
+![Tensorflow Haskell Repo Execution Times on Macbook Air](https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac.png)
 
-![Tensorflow Haskell Repo Parallel Speedup on Macbook Air][https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac_speedup.png]
+![Tensorflow Haskell Repo Parallel Speedup on Macbook Air](https://raw.githubusercontent.com/MarkPKCollier/CS4400-assignment-2/master/images/tensorflow_haskell_mac_speedup.png)
 
 ## Libraries
 
