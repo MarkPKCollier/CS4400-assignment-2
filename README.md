@@ -68,7 +68,11 @@ Below is the API specification for the RESTful cyclomatic complexity server.
 
 My implementation provides a RESTful API which exposes a simple endpoint to call with a code repository's url. You may also specify a data parallelisation strategy from ['files', 'commits'], a work distribution strategy [work_stealing', 'work_pushing'] and the maximum number of workers you wish to spin up.
 
+I computed the cyclomatic complexity of the user provided repo using [Argon](https://github.com/rubik/argon). Thus the computed cyclomatic complexity is of Haskell (.hs) files only.
+
 I know you said in class that undergraduates were only required to implement one parallelisation strategy, but I have decided to compare the work pushing and work stealing approach and two data distributions strategies to go the extra mile.
+
+## Work & data distribution
 
 To distribute the work across the nodes in the distributed system I implement and compare the **master-slave work stealing pattern** and the **master-slave work pushing pattern**.
 
@@ -78,11 +82,19 @@ In particular each worker maintains a local copy of the repository which it atta
 
 The master nodes distributes the work by sending (commit id, file id) pairs to the workers in the case of the file data parallelisation strategy and just commit ids in the case of the commit data parallelisation strategy. Thus files are not sent accross the network in point-to-point communication, only ids which are relatively small in size are sent, this reduces network traffic.
 
+### Work pushing 
+
+For work pushing, the master node must divide up the work in advance. The key to ensuring work pushing performs well is the ability to evenly divide up the work.
+
+If there are N nodes and W work packets, a naive approach is to give the first worker the first W/N packets. But the distribution pattern I implement is to give the first worker all packets with id mod N = 1 and so on.
+
+This ensures that if the amount of work per packet is related to the packet id, which is very likely given that commits with increasing ids likely have more files, then the work is still evenly distributed using the mod arithmetic approach.
+
+## Point-to-point communication
+
 The Message Passing Interface is used to enable point-to-point communication between the workers and the master.
 
 MPI is designed to provide efficient large scale point-to-point and grouped communication between nodes in a distributed system. It provides an abstraction of message passing style communication channels between processes in a distributed system. The actual placement of these processes on hardware and implementation of the communication channel is abstracted from the user. MPI programs are known to scale well to thousands of nodes.
-
-I computed the cyclomatic complexity of the user provided repo using [Argon](https://github.com/rubik/argon). Thus the computed cyclomatic complexity is of Haskell (.hs) files only.
 
 ## Results
 
